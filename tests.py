@@ -37,3 +37,14 @@ def test_normal(dims):
 
     p_value = stats.kstest(input_tensor.numpy().flatten(), 'norm', args=(mean, std)).pvalue
     assert p_value > 0.05
+
+
+@mark.parametrize("dims", [10, 100, 200])
+def test_orthogonal(dims):
+    np.random.seed(123)
+    torch.manual_seed(123)
+    input_tensor = torch.randn(dims, dims)
+    nninit.orthogonal(input_tensor)
+    identity = torch.mm(input_tensor, input_tensor.t()) # Orthogonality check
+    check = torch.eq(identity, torch.eye(input_tensor.size(0)))
+    assert check.sum() == input_tensor.size(0) * input_tensor.size(1)

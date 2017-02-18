@@ -13,6 +13,14 @@ def constant(tensor, val):
     return tensor.fill_(val)
 
 
+def orthogonal(tensor):
+    assert len(tensor.size()) == 2
+    assert tensor.size(0) == tensor.size(1) # Must be a square matrix
+    u, s, v = torch.svd(torch.randn(tensor.size()))
+    
+    return tensor.copy_(u)
+
+
 def _calculate_fan_in_and_fan_out(tensor):
     if len(tensor.size()) == 2: # Linear
         fan_in = tensor.size(1)
